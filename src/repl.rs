@@ -79,6 +79,7 @@ impl Repl {
         }
 
         self.emulator.hard_reset();
+        self.emulator.set_uart_tx_busy_cycles(0); // instant TX in browser
         for (addr, &byte) in result.bytes.iter().enumerate() {
             self.emulator.write_byte(addr as u32, byte);
         }
@@ -149,7 +150,11 @@ impl Component for Repl {
         ctx.link().send_message(Msg::Init);
 
         Self {
-            emulator: EmulatorCore::new(),
+            emulator: {
+                let mut emu = EmulatorCore::new();
+                emu.set_uart_tx_busy_cycles(0); // instant TX in browser
+                emu
+            },
             output: String::new(),
             input: String::from("(+ 1 2)"),
             status: "Assembling interpreter...".into(),
