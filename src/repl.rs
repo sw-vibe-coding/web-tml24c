@@ -188,10 +188,17 @@ impl Component for Repl {
                     return true;
                 }
 
-                for byte in self.input.bytes() {
-                    self.uart_tx_queue.push_back(byte);
+                // Filter out comment-only and blank lines before sending to UART
+                for line in self.input.lines() {
+                    let trimmed = line.trim();
+                    if trimmed.is_empty() || trimmed.starts_with(";;") {
+                        continue;
+                    }
+                    for byte in line.bytes() {
+                        self.uart_tx_queue.push_back(byte);
+                    }
+                    self.uart_tx_queue.push_back(b'\n');
                 }
-                self.uart_tx_queue.push_back(b'\n');
 
                 self.status = "Evaluating...".into();
                 self.waiting_for_input = false;
