@@ -120,9 +120,17 @@ impl Component for Repl {
                     return false;
                 }
 
-                // Feed next queued byte to UART if available
-                if let Some(byte) = self.uart_tx_queue.pop_front() {
+                // Feed queued bytes to UART — one full line per tick
+                // (feeding byte-at-a-time causes race conditions when
+                // the interpreter processes \n and immediately reads the
+                // next byte in the same batch)
+                while let Some(byte) = self.uart_tx_queue.pop_front() {
                     self.emulator.send_uart_byte(byte);
+                    // Run enough instructions for the CPU to consume the byte
+                    self.emulator.run_batch(200);
+                    if byte == b'\n' {
+                        break; // Let the interpreter process this line
+                    }
                 }
 
                 let result = self.emulator.run_batch(BATCH_SIZE);
