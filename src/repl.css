@@ -229,7 +229,7 @@
     height: 50%;
     z-index: 5;
     background: rgba(40, 40, 64, 0.88);
-    border: 1px solid var(--border);
+    border: 2px dashed rgba(249, 226, 175, 0.5);
     border-radius: 6px;
     display: flex;
     flex-direction: column;

@@ -36,7 +36,12 @@ pub enum Msg {
 
 pub struct Repl {
     emulator: EmulatorCore,
+    /// Raw UART TX output from emulator (used by Split view)
     output: String,
+    /// Interleaved transcript: UART output + echoed user input (used by CLI view)
+    transcript: String,
+    /// How many bytes of UART output we've already copied to transcript
+    uart_seen: usize,
     input: String,
     status: String,
     running: bool,
@@ -92,6 +97,8 @@ impl Repl {
         self.addr_str_pool_next = result.labels.get("_str_pool_next").copied();
 
         self.output.clear();
+        self.transcript.clear();
+        self.uart_seen = 0;
         self.uart_tx_queue.clear();
         self.loaded = true;
         self.waiting_for_input = false;
@@ -156,6 +163,8 @@ impl Component for Repl {
                 emu
             },
             output: String::new(),
+            transcript: String::new(),
+            uart_seen: 0,
             input: String::from("(+ 1 2)"),
             status: "Assembling interpreter...".into(),
             running: false,
@@ -235,9 +244,16 @@ impl Component for Repl {
                 let sp = self.emulator.get_reg(4);
                 self.stack_depth = self.stack_size.initial_sp().saturating_sub(sp);
 
-                let uart = self.emulator.get_uart_output().to_string();
-                if uart != self.output {
-                    self.output = uart;
+                let uart = self.emulator.get_uart_output();
+                // Append new UART bytes to transcript (CLI view)
+                if uart.len() > self.uart_seen {
+                    self.transcript.push_str(&uart[self.uart_seen..]);
+                    self.uart_seen = uart.len();
+                }
+                // Update raw output (Split view)
+                let uart_owned = uart.to_string();
+                if uart_owned != self.output {
+                    self.output = uart_owned;
                 }
 
                 match result.reason {
@@ -287,6 +303,13 @@ impl Component for Repl {
             Msg::Eval => {
                 if !self.loaded {
                     return true;
+                }
+                // Echo input to transcript (CLI view shows interleaved I/O)
+                for line in self.input.lines() {
+                    if !line.trim().is_empty() {
+                        self.transcript.push_str(line);
+                        self.transcript.push('\n');
+                    }
                 }
                 self.send_input();
                 self.status = "Evaluating...".into();
@@ -379,6 +402,8 @@ impl Component for Repl {
             Msg::ClearAll => {
                 self.emulator.clear_uart_output();
                 self.output.clear();
+                self.transcript.clear();
+                self.uart_seen = 0;
                 self.input.clear();
                 self.selected_demo = None;
                 true
@@ -438,6 +463,11 @@ impl Component for Repl {
         });
 
         let eval_disabled = (!self.waiting_for_input && self.running) || !self.loaded;
+        let status_display = if self.running && !self.waiting_for_input {
+            format!("\u{25e2} {}", self.status) // ◢ spinner indicator
+        } else {
+            self.status.clone()
+        };
         let view_label = match self.view_mode {
             ViewMode::Cli => "Split",
             ViewMode::Split => "CLI",
@@ -525,7 +555,11 @@ impl Component for Repl {
                 // Main area (output is always full-size)
                 <div class="main-area">
                     // Output panel (full size)
-                    <pre class="output">{ &self.output }</pre>
+                    // CLI view: interleaved transcript; Split view: raw UART output
+                    <pre class="output">{ match self.view_mode {
+                        ViewMode::Cli => &self.transcript,
+                        ViewMode::Split => &self.output,
+                    }}</pre>
 
                     // Floating hardware + memory panel (top-right)
                     <div class="hw-float">
@@ -567,7 +601,7 @@ impl Component for Repl {
                                         spellcheck="false"
                                         disabled={eval_disabled}
                                     />
-                                    <span class="cli-status">{ &self.status }</span>
+                                    <span class="cli-status">{ &status_display }</span>
                                 </div>
                             }
                         }
@@ -590,7 +624,7 @@ impl Component for Repl {
                                         <button class="eval-btn" onclick={on_eval} disabled={eval_disabled}>
                                             {"Eval"}
                                         </button>
-                                        <span class="status">{ &self.status }</span>
+                                        <span class="status">{ &status_display }</span>
                                     </div>
                                 </div>
                             }
