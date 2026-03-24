@@ -47,9 +47,17 @@ pub struct Repl {
     led_on: bool,
     switch_pressed: bool,
     view_mode: ViewMode,
+    /// Address of _heap_next in SRAM (from assembly labels)
+    heap_next_addr: Option<u32>,
+    /// Current heap usage (cells)
+    heap_used: u32,
+    /// Current stack depth (bytes)
+    stack_depth: u32,
     input_ref: NodeRef,
     cli_input_ref: NodeRef,
 }
+
+const HEAP_SIZE: u32 = 4096;
 
 impl Repl {
     fn load_binary(&mut self) {
@@ -70,12 +78,17 @@ impl Repl {
         self.emulator.set_pc(0);
         self.emulator.set_reg(4, self.stack_size.initial_sp());
 
+        // Capture heap_next address from symbol table
+        self.heap_next_addr = result.labels.get("_heap_next").copied();
+
         self.output.clear();
         self.uart_tx_queue.clear();
         self.loaded = true;
         self.waiting_for_input = false;
         self.led_on = false;
         self.switch_pressed = false;
+        self.heap_used = 0;
+        self.stack_depth = 0;
         self.status = format!(
             "Loaded {} bytes ({}, {} stack).",
             result.bytes.len(),
@@ -85,6 +98,23 @@ impl Repl {
 
         self.emulator.resume();
         self.running = true;
+    }
+
+    fn view_gauge(&self, label: &str, used: u32, total: u32) -> Html {
+        let pct = if total > 0 { (used as f64 / total as f64 * 100.0).min(100.0) } else { 0.0 };
+        let color_class = if pct < 60.0 { "gauge-green" }
+            else if pct < 85.0 { "gauge-yellow" }
+            else { "gauge-red" };
+        html! {
+            <div class="gauge-row">
+                <span class="gauge-label">{ label }</span>
+                <div class="gauge-track">
+                    <div class={classes!("gauge-fill", color_class)}
+                         style={format!("width:{}%", pct)} />
+                </div>
+                <span class="gauge-text">{ format!("{}/{}", used, total) }</span>
+            </div>
+        }
     }
 
     fn send_input(&mut self) {
@@ -121,6 +151,9 @@ impl Component for Repl {
             led_on: false,
             switch_pressed: false,
             view_mode: ViewMode::Cli,
+            heap_next_addr: None,
+            heap_used: 0,
+            stack_depth: 0,
             input_ref: NodeRef::default(),
             cli_input_ref: NodeRef::default(),
         }
@@ -163,6 +196,14 @@ impl Component for Repl {
                 if result.led_changed {
                     self.led_on = self.emulator.get_led() & 1 != 0;
                 }
+
+                // Sample memory usage
+                if let Some(addr) = self.heap_next_addr {
+                    self.heap_used = self.emulator.read_word(addr);
+                }
+                let sp = self.emulator.get_reg(4);
+                let initial_sp = self.stack_size.initial_sp();
+                self.stack_depth = initial_sp.saturating_sub(sp);
 
                 let uart = self.emulator.get_uart_output().to_string();
                 if uart != self.output {
@@ -435,7 +476,7 @@ impl Component for Repl {
                     // Output panel (full size)
                     <pre class="output">{ &self.output }</pre>
 
-                    // Floating hardware panel (top-right)
+                    // Floating hardware + memory panel (top-right)
                     <div class="hw-float">
                         <div class="hw-row">
                             <span class="hw-label">{"D2"}</span>
@@ -446,6 +487,9 @@ impl Component for Repl {
                             <div class={if self.switch_pressed { "switch switch-on" } else { "switch switch-off" }}
                                  onclick={on_toggle_switch} />
                         </div>
+                        <div class="hw-sep" />
+                        { self.view_gauge("Heap", self.heap_used, HEAP_SIZE) }
+                        { self.view_gauge("Stack", self.stack_depth, self.stack_size.bytes()) }
                     </div>
 
                     // Input area depends on view mode

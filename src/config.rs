@@ -5,7 +5,7 @@ pub enum PreludeTier {
     Minimal,
     Standard,
     Full,
-    /// Scheme-flavored prelude (not yet compiled — uses Full as fallback)
+    /// Scheme-flavored prelude: #t/#f, define-fn, let*, equal?, even?/odd?
     Scheme,
 }
 
@@ -26,7 +26,7 @@ impl PreludeTier {
             Self::Minimal => "6 comparison functions",
             Self::Standard => "~40 functions: list ops, macros, strings, I/O",
             Self::Full => "~65 functions: standard + lazy, threading, anaphora",
-            Self::Scheme => "Scheme-flavored: #t/#f, define-fn, let*, equal? (incomplete)",
+            Self::Scheme => "Scheme-flavored: #t/#f, define-fn, let*, equal?, even?/odd?",
         }
     }
 
@@ -35,8 +35,8 @@ impl PreludeTier {
             Self::Bare => include_str!("../asm/repl-bare.s"),
             Self::Minimal => include_str!("../asm/repl-minimal.s"),
             Self::Standard => include_str!("../asm/repl-standard.s"),
-            // Scheme falls back to Full until a dedicated binary exists
-            Self::Full | Self::Scheme => include_str!("../asm/repl-full.s"),
+            Self::Full => include_str!("../asm/repl-full.s"),
+            Self::Scheme => include_str!("../asm/repl-scheme.s"),
         }
     }
 

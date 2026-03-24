@@ -147,6 +147,43 @@
     transform: scale(0.95);
 }
 
+.hw-sep {
+    border-top: 1px solid var(--border);
+    margin: 2px 0;
+}
+
+/* Memory gauges */
+.gauge-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.gauge-label {
+    font-size: 11px;
+    color: var(--dim);
+    min-width: 32px;
+}
+.gauge-track {
+    width: 60px;
+    height: 8px;
+    background: #222;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.gauge-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s, background 0.3s;
+}
+.gauge-green  { background: #a6e3a1; }
+.gauge-yellow { background: #f9e2af; }
+.gauge-red    { background: #f38ba8; }
+.gauge-text {
+    font-size: 10px;
+    color: var(--dim);
+    white-space: nowrap;
+}
+
 /* ─── CLI view: single-line input bar at bottom ─── */
 .cli-input-bar {
     display: flex;
