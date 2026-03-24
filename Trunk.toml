@@ -2,4 +2,4 @@
 dist = "pages"
 
 [serve]
-port = 7402
+port = 9135

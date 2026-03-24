@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use cor24_emulator::{Assembler, EmulatorCore, StopReason};
 use gloo::timers::callback::Timeout;
 use web_sys::HtmlTextAreaElement;
@@ -27,6 +29,10 @@ pub struct Repl {
     status: String,
     running: bool,
     loaded: bool,
+    /// Waiting for UART input (interpreter in getc_uart polling loop)
+    waiting_for_input: bool,
+    /// Pending UART input bytes to feed one at a time
+    uart_tx_queue: VecDeque<u8>,
     input_ref: NodeRef,
 }
 
@@ -45,6 +51,8 @@ impl Component for Repl {
             status: "Assembling interpreter...".into(),
             running: false,
             loaded: false,
+            waiting_for_input: false,
+            uart_tx_queue: VecDeque::new(),
             input_ref: NodeRef::default(),
         }
     }
@@ -68,12 +76,12 @@ impl Component for Repl {
                 self.emulator.set_pc(0);
 
                 self.status = format!(
-                    "Loaded {} bytes. Running interpreter tests...",
+                    "Loaded {} bytes. Running interpreter...",
                     result.bytes.len()
                 );
                 self.loaded = true;
 
-                // Start running the interpreter (it runs tests on startup)
+                // Start running the interpreter
                 self.emulator.resume();
                 self.running = true;
                 ctx.link().send_message(Msg::Tick);
@@ -83,6 +91,14 @@ impl Component for Repl {
             Msg::Tick => {
                 if !self.running {
                     return false;
+                }
+
+                // Feed next queued byte to UART if CPU is ready for it
+                if !self.uart_tx_queue.is_empty() {
+                    if let Some(&byte) = self.uart_tx_queue.front() {
+                        self.emulator.send_uart_byte(byte);
+                        self.uart_tx_queue.pop_front();
+                    }
                 }
 
                 let result = self.emulator.run_batch(BATCH_SIZE);
@@ -95,20 +111,23 @@ impl Component for Repl {
 
                 match result.reason {
                     StopReason::CycleLimit => {
-                        // More work to do — schedule next tick
-                        let link = ctx.link().clone();
-                        Timeout::new(0, move || link.send_message(Msg::Tick)).forget();
-                        self.status = format!(
-                            "Running... {} instructions",
-                            self.emulator.instructions_count()
-                        );
+                        // Detect REPL prompt ">" at end of output = waiting for input
+                        let at_prompt = self.uart_tx_queue.is_empty()
+                            && self.output.ends_with("> ");
+
+                        if at_prompt {
+                            self.running = false;
+                            self.waiting_for_input = true;
+                            self.status = "Ready.".into();
+                        } else {
+                            // More work to do — schedule next tick
+                            let link = ctx.link().clone();
+                            Timeout::new(0, move || link.send_message(Msg::Tick)).forget();
+                        }
                     }
                     StopReason::Halted => {
                         self.running = false;
-                        self.status = format!(
-                            "Halted after {} instructions. Ready.",
-                            self.emulator.instructions_count()
-                        );
+                        self.status = "Halted.".into();
                     }
                     StopReason::InvalidInstruction(byte) => {
                         self.running = false;
@@ -141,17 +160,19 @@ impl Component for Repl {
                     return true;
                 }
 
-                // Send input text to UART byte-by-byte
+                // Queue input bytes for feeding one at a time during ticks
                 for byte in self.input.bytes() {
-                    self.emulator.send_uart_byte(byte);
+                    self.uart_tx_queue.push_back(byte);
                 }
-                // Send newline to terminate input
-                self.emulator.send_uart_byte(b'\n');
+                self.uart_tx_queue.push_back(b'\n');
 
                 self.status = "Evaluating...".into();
-                self.emulator.resume();
-                self.running = true;
-                ctx.link().send_message(Msg::Tick);
+                self.waiting_for_input = false;
+                if !self.running {
+                    self.emulator.resume();
+                    self.running = true;
+                    ctx.link().send_message(Msg::Tick);
+                }
                 true
             }
         }
@@ -182,7 +203,7 @@ impl Component for Repl {
                         spellcheck="false"
                     />
                     <div class="controls">
-                        <button onclick={on_eval} disabled={self.running || !self.loaded}>
+                        <button onclick={on_eval} disabled={(!self.waiting_for_input && self.running) || !self.loaded}>
                             {"Eval"}
                         </button>
                         <span class="status">{ &self.status }</span>

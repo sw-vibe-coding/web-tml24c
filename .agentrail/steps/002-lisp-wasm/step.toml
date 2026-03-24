@@ -1,6 +1,6 @@
 number = 2
 slug = "lisp-wasm"
-status = "pending"
+status = "in-progress"
 description = "Get Lisp evaluator running in WASM"
 role = "legacy"
 context_files = []
