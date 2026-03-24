@@ -43,9 +43,7 @@ pub fn app() -> Html {
                 <span class="footer-sep">{"\u{00b7}"}</span>
                 <a href="https://makerlisp.com" target="_blank">{"COR24-TB"}</a>
                 <span class="footer-sep">{"\u{00b7}"}</span>
-                <a href="https://github.com/sw-vibe-coding/web-tml24c" target="_blank">{"Source"}</a>
-                <span class="footer-sep">{"\u{00b7}"}</span>
-                <a href="https://github.com/sw-vibe-coding/tml24c/blob/main/demos/README.md" target="_blank">{"Demos"}</a>
+                <a href="https://github.com/sw-vibe-coding/tml24c/blob/main/docs/demos.md" target="_blank">{"Demo Documentation"}</a>
             </footer>
         </>
     }
