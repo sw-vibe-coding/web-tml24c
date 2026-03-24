@@ -19,7 +19,7 @@ done
 # 2. Build WASM for GitHub Pages (with correct public URL)
 echo "=== Building pages/ ==="
 cd "$PROJECT_DIR"
-trunk build --public-url /web-tml24c/ -d pages
+trunk build --release --public-url /web-tml24c/ -d pages
 
 # 3. Ensure .nojekyll exists (trunk build -d wipes the output dir)
 touch pages/.nojekyll
