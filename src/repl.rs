@@ -121,23 +121,22 @@ impl Component for Repl {
                 }
 
                 // Feed queued bytes to UART using poll-before-feed:
-                // only send next byte when RX ready bit is clear
+                // check RX ready bit is clear before sending next byte
                 // (matching cor24-run CLI behavior)
-                while !self.uart_tx_queue.is_empty() {
+                let mut bytes_fed = 0u32;
+                while !self.uart_tx_queue.is_empty() && bytes_fed < 256 {
                     // Check if previous byte was consumed
                     let status = self.emulator.read_byte(0xFF0101);
                     if status & 0x01 != 0 {
-                        // RX still has unread data — run some instructions
-                        // to let the CPU consume it
-                        self.emulator.run_batch(100);
+                        self.emulator.run_batch(50);
                         continue;
                     }
                     let byte = self.uart_tx_queue.pop_front().unwrap();
                     self.emulator.send_uart_byte(byte);
-                    // Run instructions to consume the byte
-                    self.emulator.run_batch(100);
+                    self.emulator.run_batch(50);
+                    bytes_fed += 1;
                     if byte == b'\n' {
-                        break; // Let the interpreter process this line
+                        break;
                     }
                 }
 
@@ -164,8 +163,9 @@ impl Component for Repl {
                             self.waiting_for_input = true;
                             self.status = "Ready.".into();
                         } else {
+                            // Yield to browser render thread
                             let link = ctx.link().clone();
-                            Timeout::new(0, move || link.send_message(Msg::Tick)).forget();
+                            Timeout::new(10, move || link.send_message(Msg::Tick)).forget();
                         }
                     }
                     StopReason::Halted => {
