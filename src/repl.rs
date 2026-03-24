@@ -120,14 +120,22 @@ impl Component for Repl {
                     return false;
                 }
 
-                // Feed queued bytes to UART — one full line per tick
-                // (feeding byte-at-a-time causes race conditions when
-                // the interpreter processes \n and immediately reads the
-                // next byte in the same batch)
-                while let Some(byte) = self.uart_tx_queue.pop_front() {
+                // Feed queued bytes to UART using poll-before-feed:
+                // only send next byte when RX ready bit is clear
+                // (matching cor24-run CLI behavior)
+                while !self.uart_tx_queue.is_empty() {
+                    // Check if previous byte was consumed
+                    let status = self.emulator.read_byte(0xFF0101);
+                    if status & 0x01 != 0 {
+                        // RX still has unread data — run some instructions
+                        // to let the CPU consume it
+                        self.emulator.run_batch(100);
+                        continue;
+                    }
+                    let byte = self.uart_tx_queue.pop_front().unwrap();
                     self.emulator.send_uart_byte(byte);
-                    // Run enough instructions for the CPU to consume the byte
-                    self.emulator.run_batch(200);
+                    // Run instructions to consume the byte
+                    self.emulator.run_batch(100);
                     if byte == b'\n' {
                         break; // Let the interpreter process this line
                     }
