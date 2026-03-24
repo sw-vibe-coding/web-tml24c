@@ -1,0 +1,1 @@
+Phase 1-2-5: Multi-binary prelude switching (bare/minimal/standard/full/scheme), 17 grouped demos with optgroup dropdown, header/footer/GitHub corner chrome, LED D2 widget, GitHub Pages deployment, error handling demo, recompiled all REPL variants, README with screenshot

@@ -6,15 +6,17 @@ Write Lisp expressions, select a prelude tier, and evaluate — all in the brows
 
 **[Live Demo](https://sw-vibe-coding.github.io/web-tml24c/)**
 
-![web-tml24c screenshot](images/screenshot.png?ts=1711310400000)
+![web-tml24c screenshot](images/screenshot.png?ts=1774673309000)
 
 ## Features
 
-- **5 prelude tiers**: Bare, Minimal, Standard, Full, Scheme (incomplete)
-- **17 embedded demos**: TCO, macros, lazy sequences, error handling, bottles of beer, LED blink, and more
+- **5 prelude tiers**: Bare, Minimal, Standard, Full, Scheme
+- **17 embedded demos**: TCO, macros, lazy sequences, error handling, anaphoric macros, bottles of beer, LED blink, and more — grouped by prelude in the dropdown
+- **Dual view modes**: CLI (Enter to eval, interleaved output) and Split (semi-transparent overlay for multi-line code)
 - **Configurable stack**: 3 KB (hardware default) or 8 KB (full EBR)
-- **Hardware widgets**: LED D2 visualization
-- **COR24 emulator**: Full 24-bit RISC CPU running in WebAssembly
+- **Floating hardware panel**: LED D2, Switch S2 (clickable), with live memory gauges for heap, symbols, string pool, and stack (green/yellow/red)
+- **Pause/Resume/Reset/Clear** controls
+- **COR24 emulator**: Full 24-bit RISC CPU running in WebAssembly with instant UART TX
 
 ## Related
 
