@@ -56,6 +56,21 @@ Web UI for Tiny Macro Lisp on COR24. Browser-based Lisp REPL running on the COR2
 
 ## Build
 
-Approach TBD (Emscripten for C to WASM or Rust rewrite of Lisp core). See docs/architecture.md once created.
-
 Edition 2024 for any Rust code. Never suppress warnings.
+
+**Always use scripts, never run trunk directly:**
+
+```bash
+./scripts/serve.sh          # Dev server on port 9135
+./scripts/build-all.sh      # Recompile tml24c + build pages/ for GitHub Pages
+```
+
+`build-all.sh` does three things:
+1. Recompiles all 5 REPL variants (bare/minimal/standard/full/scheme) from tml24c via tc24r
+2. Runs `trunk build --public-url /web-tml24c/ -d pages` for correct GitHub Pages paths
+3. Recreates `pages/.nojekyll` (trunk wipes the output dir)
+
+**Before committing pages/ changes, always run `./scripts/build-all.sh`.**
+
+The `pages/` directory is committed and deployed via GitHub Actions (`.github/workflows/pages.yml`).
+Do NOT run `trunk build` or `trunk serve` directly — use the scripts.

@@ -28,8 +28,8 @@ Write Lisp expressions, select a prelude tier, and evaluate — all in the brows
 ## Development
 
 ```bash
-trunk serve                                              # dev server on port 9135
-trunk build --release --public-url /web-tml24c/ -d pages # production build
+./scripts/serve.sh          # dev server with hot reload on port 9135
+./scripts/build-all.sh      # recompile tml24c + build pages/ for GitHub Pages
 ```
 
 ## License
