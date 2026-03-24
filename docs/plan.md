@@ -316,4 +316,37 @@ Phase 1 (multi-binary) is prerequisite for all others.
 Phase 2 (demos) and Phase 3 (hardware) can run in parallel after Phase 1.
 Phase 4 (docs) and Phase 5 (chrome) can run in parallel after Phase 1.
 
-Recommended: **1 → 2+3 parallel → 4+5 parallel**.
+Recommended: **1 → 2+3 parallel → 4+5 parallel → 6**.
+
+---
+
+## Phase 6: Prelude Editor & Custom Preludes (Future)
+
+### 6.1 Scheme prelude tier
+
+tml24c will add a Scheme-flavored prelude with different naming conventions
+and examples. The web UI needs to support dynamically-added prelude tiers
+without hardcoding the list.
+
+### 6.2 Prelude editor tab/dialog
+
+A dedicated panel for viewing, editing, and creating custom preludes:
+- View the source of any built-in prelude (read-only for built-ins)
+- Create new custom preludes in a text editor
+- Name/rename custom preludes
+- Export prelude to `.l24` text file (download)
+- Import prelude from `.l24` text file (upload)
+- Save custom preludes to browser localStorage
+
+### 6.3 Custom prelude execution
+
+Custom preludes use the **bare** REPL binary. The prelude text is fed
+via UART before the user's input, exactly like `cat prelude.l24 | cor24-run`.
+The bare binary has no compiled-in prelude, so it evaluates the UART
+input as Lisp definitions.
+
+### 6.4 Per-prelude demo sets
+
+Each prelude tier (including Scheme and custom) may have different
+applicable demos. Demo metadata should include a list of compatible
+preludes rather than a single required tier.

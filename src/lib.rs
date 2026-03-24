@@ -1,4 +1,5 @@
 pub mod config;
+pub mod demos;
 pub mod repl;
 
 use repl::Repl;

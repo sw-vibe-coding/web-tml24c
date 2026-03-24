@@ -6,6 +6,7 @@ use web_sys::HtmlTextAreaElement;
 use yew::prelude::*;
 
 use crate::config::{PreludeTier, StackSize};
+use crate::demos::DEMOS;
 
 /// Batch size per animation frame tick
 const BATCH_SIZE: u64 = 50_000;
@@ -25,6 +26,8 @@ pub enum Msg {
     SetStack(StackSize),
     /// Reset emulator with current config
     Reset,
+    /// Load a demo program
+    LoadDemo(usize),
 }
 
 pub struct Repl {
@@ -232,6 +235,35 @@ impl Component for Repl {
                 }
                 true
             }
+
+            Msg::LoadDemo(index) => {
+                if let Some(demo) = DEMOS.get(index) {
+                    // Strip comment-only lines from demo source
+                    let source: String = demo.source
+                        .lines()
+                        .filter(|line| !line.starts_with(";;"))
+                        .collect::<Vec<_>>()
+                        .join("\n")
+                        .trim()
+                        .to_string();
+                    self.input = source;
+
+                    // Auto-select required prelude and stack
+                    let needs_reload = demo.prelude != self.prelude
+                        || demo.stack != self.stack_size;
+                    self.prelude = demo.prelude;
+                    self.stack_size = demo.stack;
+
+                    if needs_reload {
+                        self.running = false;
+                        self.load_binary();
+                        if self.loaded {
+                            ctx.link().send_message(Msg::Tick);
+                        }
+                    }
+                }
+                true
+            }
         }
     }
 
@@ -261,6 +293,12 @@ impl Component for Repl {
                 _ => StackSize::ThreeKb,
             };
             Msg::SetStack(size)
+        });
+
+        let on_demo = ctx.link().callback(|e: Event| {
+            let target: web_sys::HtmlSelectElement = e.target_unchecked_into();
+            let idx: usize = target.value().parse().unwrap_or(usize::MAX);
+            Msg::LoadDemo(idx)
         });
 
         let eval_disabled = (!self.waiting_for_input && self.running) || !self.loaded;
@@ -298,6 +336,19 @@ impl Component for Repl {
                                 html! {
                                     <option value={val} selected={*s == self.stack_size}>
                                         { s.label() }
+                                    </option>
+                                }
+                            })}
+                        </select>
+                    </label>
+                    <label class="toolbar-item">
+                        {"Demo"}
+                        <select onchange={on_demo}>
+                            <option value="" selected=true>{"— select —"}</option>
+                            { for DEMOS.iter().enumerate().map(|(i, d)| {
+                                html! {
+                                    <option value={i.to_string()}>
+                                        { format!("{} ({})", d.title, d.prelude.label()) }
                                     </option>
                                 }
                             })}
