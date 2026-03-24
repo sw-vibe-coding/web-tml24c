@@ -23,6 +23,7 @@ trunk build --public-url /web-tml24c/ -d pages
 
 # 3. Ensure .nojekyll exists (trunk build -d wipes the output dir)
 touch pages/.nojekyll
+git add -f pages/.nojekyll 2>/dev/null || true
 
 echo "=== Done ==="
 echo "Pages built in: $PROJECT_DIR/pages/"
