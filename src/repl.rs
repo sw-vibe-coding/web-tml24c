@@ -63,6 +63,8 @@ pub struct Repl {
     sym_used: u32,
     str_pool_used: u32,
     stack_depth: u32,
+    /// Exponentially weighted CPU load (0.0 = idle, 1.0 = pegged)
+    cpu_load: f64,
     input_ref: NodeRef,
     cli_input_ref: NodeRef,
 }
@@ -108,6 +110,7 @@ impl Repl {
         self.sym_used = 0;
         self.str_pool_used = 0;
         self.stack_depth = 0;
+        self.cpu_load = 0.0;
         self.status = format!(
             "Loaded {} bytes ({}, {} stack).",
             result.bytes.len(),
@@ -132,6 +135,26 @@ impl Repl {
                          style={format!("width:{}%", pct)} />
                 </div>
                 <span class="gauge-text">{ format!("{}/{}", used, total) }</span>
+            </div>
+        }
+    }
+
+    fn view_cpu_gauge(&self) -> Html {
+        let pct = (self.cpu_load * 100.0).min(100.0);
+        let color_class = if pct < 20.0 { "gauge-green" }
+            else if pct < 60.0 { "gauge-yellow" }
+            else { "gauge-red" };
+        let label = if pct < 1.0 { "idle" }
+            else if pct > 90.0 { "pegged" }
+            else { "running" };
+        html! {
+            <div class="gauge-row">
+                <span class="gauge-label">{ "CPU" }</span>
+                <div class="gauge-track">
+                    <div class={classes!("gauge-fill", color_class)}
+                         style={format!("width:{}%", pct)} />
+                </div>
+                <span class="gauge-text">{ label }</span>
             </div>
         }
     }
@@ -184,6 +207,7 @@ impl Component for Repl {
             sym_used: 0,
             str_pool_used: 0,
             stack_depth: 0,
+            cpu_load: 0.0,
             input_ref: NodeRef::default(),
             cli_input_ref: NodeRef::default(),
         }
@@ -227,6 +251,11 @@ impl Component for Repl {
 
                 let result = self.emulator.run_batch(BATCH_SIZE);
 
+                // EWMA of CPU utilization: how much of the batch budget was used
+                let utilization = result.instructions_run as f64 / BATCH_SIZE as f64;
+                const ALPHA: f64 = 0.15; // smoothing factor
+                self.cpu_load = self.cpu_load * (1.0 - ALPHA) + utilization * ALPHA;
+
                 if result.led_changed {
                     self.led_on = self.emulator.get_led() & 1 != 0;
                 }
@@ -264,6 +293,7 @@ impl Component for Repl {
                         if at_prompt {
                             self.running = false;
                             self.waiting_for_input = true;
+                            self.cpu_load = 0.0;
                             self.status = "Ready.".into();
                         } else {
                             let link = ctx.link().clone();
@@ -273,6 +303,7 @@ impl Component for Repl {
                     StopReason::Halted => {
                         self.running = false;
                         self.waiting_for_input = false;
+                        self.cpu_load = 0.0;
                         self.status = "Program finished.".into();
                     }
                     StopReason::InvalidInstruction(byte) => {
@@ -569,6 +600,7 @@ impl Component for Repl {
                                  onclick={on_toggle_switch} />
                         </div>
                         <div class="hw-sep" />
+                        { self.view_cpu_gauge() }
                         { self.view_gauge("Heap", self.heap_used, HEAP_SIZE) }
                         { self.view_gauge("Syms", self.sym_used, MAX_SYMBOLS) }
                         { self.view_gauge("Strs", self.str_pool_used, STR_POOL_SIZE) }
