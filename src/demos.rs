@@ -18,7 +18,6 @@ pub const DEMOS: &[Demo] = &[
         prelude: PreludeTier::Minimal,
         stack: StackSize::EightKb,
     },
-
     // ── Standard prelude ─────────────────────────────────────
     Demo {
         title: "Blink LED",
@@ -132,7 +131,6 @@ pub const DEMOS: &[Demo] = &[
         prelude: PreludeTier::Standard,
         stack: StackSize::ThreeKb,
     },
-
     // ── Full prelude ─────────────────────────────────────────
     Demo {
         title: "Anaphoric Macros",
@@ -176,7 +174,6 @@ pub const DEMOS: &[Demo] = &[
         prelude: PreludeTier::Full,
         stack: StackSize::ThreeKb,
     },
-
     // ── Scheme prelude ───────────────────────────────────────
     Demo {
         title: "Scheme Demo",

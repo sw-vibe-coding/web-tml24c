@@ -123,10 +123,18 @@ impl Repl {
     }
 
     fn view_gauge(&self, label: &str, used: u32, total: u32) -> Html {
-        let pct = if total > 0 { (used as f64 / total as f64 * 100.0).min(100.0) } else { 0.0 };
-        let color_class = if pct < 60.0 { "gauge-green" }
-            else if pct < 85.0 { "gauge-yellow" }
-            else { "gauge-red" };
+        let pct = if total > 0 {
+            (used as f64 / total as f64 * 100.0).min(100.0)
+        } else {
+            0.0
+        };
+        let color_class = if pct < 60.0 {
+            "gauge-green"
+        } else if pct < 85.0 {
+            "gauge-yellow"
+        } else {
+            "gauge-red"
+        };
         html! {
             <div class="gauge-row">
                 <span class="gauge-label">{ label }</span>
@@ -141,12 +149,20 @@ impl Repl {
 
     fn view_cpu_gauge(&self) -> Html {
         let pct = (self.cpu_load * 100.0).min(100.0);
-        let color_class = if pct < 20.0 { "gauge-green" }
-            else if pct < 60.0 { "gauge-yellow" }
-            else { "gauge-red" };
-        let label = if pct < 1.0 { "idle" }
-            else if pct > 90.0 { "pegged" }
-            else { "running" };
+        let color_class = if pct < 20.0 {
+            "gauge-green"
+        } else if pct < 60.0 {
+            "gauge-yellow"
+        } else {
+            "gauge-red"
+        };
+        let label = if pct < 1.0 {
+            "idle"
+        } else if pct > 90.0 {
+            "pegged"
+        } else {
+            "running"
+        };
         html! {
             <div class="gauge-row">
                 <span class="gauge-label">{ "CPU" }</span>
@@ -287,8 +303,8 @@ impl Component for Repl {
 
                 match result.reason {
                     StopReason::CycleLimit => {
-                        let at_prompt = self.uart_tx_queue.is_empty()
-                            && self.output.ends_with("> ");
+                        let at_prompt =
+                            self.uart_tx_queue.is_empty() && self.output.ends_with("> ");
 
                         if at_prompt {
                             self.running = false;
