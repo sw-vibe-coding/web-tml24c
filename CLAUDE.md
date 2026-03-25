@@ -65,19 +65,11 @@ Edition 2024 for any Rust code. Never suppress warnings.
 ./scripts/build-all.sh      # Recompile tml24c + build pages/ for GitHub Pages
 ```
 
-`build-all.sh` does three things:
+`build-all.sh` does two things:
 1. Recompiles all 5 REPL variants (bare/minimal/standard/full/scheme) from tml24c via tc24r
-2. Runs `trunk build --public-url /web-tml24c/ -d pages` for correct GitHub Pages paths
-3. Recreates `pages/.nojekyll` (trunk wipes the output dir)
+2. Builds WASM into `dist/` (gitignored), then rsyncs to `pages/` (preserving `.nojekyll`)
 
 **Before committing pages/ changes, always run `./scripts/build-all.sh`.**
-
-**When staging pages/, always force-add .nojekyll:**
-```bash
-git add pages/ && git add -f pages/.nojekyll
-```
-Trunk wipes the output dir on build, and `git add pages/` will stage the deletion
-of .nojekyll unless you force-add it back.
 
 The `pages/` directory is committed and deployed via GitHub Actions (`.github/workflows/pages.yml`).
 Do NOT run `trunk build` or `trunk serve` directly — use the scripts.

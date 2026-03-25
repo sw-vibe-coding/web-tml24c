@@ -16,14 +16,14 @@ for v in bare minimal standard full scheme; do
   "$TC24R" "$TML_DIR/src/repl-$v.c" -I "$TML_DIR/src" -o "$PROJECT_DIR/asm/repl-$v.s"
 done
 
-# 2. Build WASM for GitHub Pages (with correct public URL)
+# 2. Build WASM into dist/ (gitignored), then sync to pages/
+#    rsync --exclude preserves .nojekyll in pages/ across rebuilds
 echo "=== Building pages/ ==="
 cd "$PROJECT_DIR"
-trunk build --release --public-url /web-tml24c/ -d pages
-
-# 3. Ensure .nojekyll exists (trunk build -d wipes the output dir)
+mkdir -p pages
 touch pages/.nojekyll
-git add -f pages/.nojekyll 2>/dev/null || true
+trunk build --release --public-url /web-tml24c/ -d dist
+rsync -a --delete --exclude='.nojekyll' dist/ pages/
 
 echo "=== Done ==="
 echo "Pages built in: $PROJECT_DIR/pages/"
