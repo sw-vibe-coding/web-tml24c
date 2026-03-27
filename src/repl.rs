@@ -30,6 +30,7 @@ pub enum Msg {
     ToggleSwitch,
     ClearAll,
     PauseResume,
+    ToggleTrace,
     /// Keydown in CLI input (Enter to eval)
     CliKeyDown(KeyboardEvent),
 }
@@ -65,6 +66,10 @@ pub struct Repl {
     stack_depth: u32,
     /// Exponentially weighted CPU load (0.0 = idle, 1.0 = pegged)
     cpu_load: f64,
+    /// Whether the instruction trace panel is visible
+    show_trace: bool,
+    /// Formatted trace text (last N instructions)
+    trace_text: String,
     input_ref: NodeRef,
     cli_input_ref: NodeRef,
 }
@@ -224,6 +229,8 @@ impl Component for Repl {
             str_pool_used: 0,
             stack_depth: 0,
             cpu_load: 0.0,
+            show_trace: false,
+            trace_text: String::new(),
             input_ref: NodeRef::default(),
             cli_input_ref: NodeRef::default(),
         }
@@ -299,6 +306,11 @@ impl Component for Repl {
                 let uart_owned = uart.to_string();
                 if uart_owned != self.output {
                     self.output = uart_owned;
+                }
+
+                // Capture instruction trace when panel is visible
+                if self.show_trace {
+                    self.trace_text = self.emulator.trace().format_last(20);
                 }
 
                 match result.reason {
@@ -456,6 +468,14 @@ impl Component for Repl {
                 true
             }
 
+            Msg::ToggleTrace => {
+                self.show_trace = !self.show_trace;
+                if self.show_trace {
+                    self.trace_text = self.emulator.trace().format_last(20);
+                }
+                true
+            }
+
             Msg::PauseResume => {
                 if self.running {
                     // Pause
@@ -481,6 +501,7 @@ impl Component for Repl {
         let on_toggle_switch = ctx.link().callback(|_| Msg::ToggleSwitch);
         let on_clear = ctx.link().callback(|_| Msg::ClearAll);
         let on_pause = ctx.link().callback(|_| Msg::PauseResume);
+        let on_trace = ctx.link().callback(|_| Msg::ToggleTrace);
 
         let on_prelude = ctx.link().callback(|e: Event| {
             let target: web_sys::HtmlSelectElement = e.target_unchecked_into();
@@ -592,6 +613,8 @@ impl Component for Repl {
                     </button>
                     <button class="toolbar-btn" onclick={on_reset}>{"Reset"}</button>
                     <button class="toolbar-btn" onclick={on_clear}>{"Clear"}</button>
+                    <button class={classes!("toolbar-btn", self.show_trace.then_some("toolbar-btn-active"))}
+                            onclick={on_trace}>{"Trace"}</button>
                     <span class="toolbar-desc">{ self.prelude.description() }</span>
                 </div>
 
@@ -622,6 +645,23 @@ impl Component for Repl {
                         { self.view_gauge("Strs", self.str_pool_used, STR_POOL_SIZE) }
                         { self.view_gauge("Stack", self.stack_depth, self.stack_size.bytes()) }
                     </div>
+
+                    // Instruction trace panel (floating, bottom-left)
+                    { if self.show_trace {
+                        html! {
+                            <div class="trace-panel">
+                                <div class="trace-header">
+                                    <span class="trace-title">{"Instruction Trace"}</span>
+                                    <span class="trace-info">{
+                                        format!("{} total", self.emulator.trace().total_count())
+                                    }</span>
+                                </div>
+                                <pre class="trace-content">{ &self.trace_text }</pre>
+                            </div>
+                        }
+                    } else {
+                        html! {}
+                    }}
 
                     // Input area depends on view mode
                     { match self.view_mode {

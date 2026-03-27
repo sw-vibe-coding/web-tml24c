@@ -1,7 +1,8 @@
 number = 4
 slug = "examples"
-status = "pending"
+status = "completed"
 description = "Add example Lisp programs with one-click load"
 role = "legacy"
 context_files = []
 created_at = "2026-03-23T17:55:48"
+completed_at = "2026-03-24T19:30:41"

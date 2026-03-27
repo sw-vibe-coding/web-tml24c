@@ -147,6 +147,13 @@ pub const DEMOS: &[Demo] = &[
         stack: StackSize::ThreeKb,
     },
     Demo {
+        title: "Iteration Patterns",
+        description: "Named let, do loop, type dispatch with fn?",
+        source: include_str!("../../tml24c/demos/iteration.l24"),
+        prelude: PreludeTier::Full,
+        stack: StackSize::ThreeKb,
+    },
+    Demo {
         title: "Bottles (Trampoline)",
         description: "Full 99 via mutual-recursion trampoline",
         source: include_str!("../../tml24c/demos/bottles2.l24"),

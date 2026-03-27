@@ -1,6 +1,6 @@
 number = 5
 slug = "trace"
-status = "pending"
+status = "in-progress"
 description = "Visual execution trace showing eval steps"
 role = "legacy"
 context_files = []

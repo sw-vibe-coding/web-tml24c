@@ -283,6 +283,55 @@
     color: var(--dim);
 }
 
+/* ─── Active toolbar button ─── */
+.toolbar-btn-active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ─── Instruction trace panel (floating, bottom-left) ─── */
+.trace-panel {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    z-index: 10;
+    background: rgba(30, 30, 46, 0.92);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 60%;
+    max-height: 45%;
+    backdrop-filter: blur(4px);
+}
+.trace-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.trace-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+}
+.trace-info {
+    font-size: 10px;
+    color: var(--dim);
+}
+.trace-content {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--green);
+    overflow: auto;
+    white-space: pre;
+    min-height: 0;
+}
+
 /* Animated spinner (visible while Eval is disabled/running) */
 .spinner {
     display: inline-block;
