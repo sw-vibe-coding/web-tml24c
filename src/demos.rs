@@ -62,13 +62,6 @@ pub const DEMOS: &[Demo] = &[
         stack: StackSize::ThreeKb,
     },
     Demo {
-        title: "String Formatting",
-        description: "format with ~a interpolation, tables, error messages",
-        source: include_str!("../../tml24c/demos/format.l24"),
-        prelude: PreludeTier::Standard,
-        stack: StackSize::ThreeKb,
-    },
-    Demo {
         title: "Macros",
         description: "let, cond, and, or — core macro system",
         source: include_str!("../../tml24c/demos/macros.l24"),
@@ -125,6 +118,13 @@ pub const DEMOS: &[Demo] = &[
         stack: StackSize::ThreeKb,
     },
     Demo {
+        title: "String Formatting",
+        description: "format with ~a interpolation, tables, error messages",
+        source: include_str!("../../tml24c/demos/format.l24"),
+        prelude: PreludeTier::Standard,
+        stack: StackSize::ThreeKb,
+    },
+    Demo {
         title: "Strings",
         description: "String type: length, append, ref, conversion",
         source: include_str!("../../tml24c/demos/strings.l24"),
@@ -147,6 +147,13 @@ pub const DEMOS: &[Demo] = &[
         stack: StackSize::ThreeKb,
     },
     Demo {
+        title: "Bottles (Trampoline)",
+        description: "Full 99 via mutual-recursion trampoline",
+        source: include_str!("../../tml24c/demos/bottles2.l24"),
+        prelude: PreludeTier::Full,
+        stack: StackSize::EightKb,
+    },
+    Demo {
         title: "Functional Toolkit",
         description: "fn?, compose, complement, every?, flatten, zip",
         source: include_str!("../../tml24c/demos/functional.l24"),
@@ -159,13 +166,6 @@ pub const DEMOS: &[Demo] = &[
         source: include_str!("../../tml24c/demos/iteration.l24"),
         prelude: PreludeTier::Full,
         stack: StackSize::ThreeKb,
-    },
-    Demo {
-        title: "Bottles (Trampoline)",
-        description: "Full 99 via mutual-recursion trampoline",
-        source: include_str!("../../tml24c/demos/bottles2.l24"),
-        prelude: PreludeTier::Full,
-        stack: StackSize::EightKb,
     },
     Demo {
         title: "Lazy Sequences",
