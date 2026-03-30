@@ -33,6 +33,8 @@ pub enum Msg {
     ToggleTrace,
     /// Keydown in CLI input (Enter to eval)
     CliKeyDown(KeyboardEvent),
+    /// Keydown in Split textarea (Shift-Enter to eval)
+    SplitKeyDown(KeyboardEvent),
 }
 
 pub struct Repl {
@@ -423,6 +425,14 @@ impl Component for Repl {
                 false
             }
 
+            Msg::SplitKeyDown(e) => {
+                if e.key() == "Enter" && e.shift_key() {
+                    e.prevent_default();
+                    ctx.link().send_message(Msg::Eval);
+                }
+                false
+            }
+
             Msg::SetPrelude(tier) => {
                 if tier != self.prelude {
                     self.prelude = tier;
@@ -725,6 +735,7 @@ impl Component for Repl {
                                 let target: HtmlTextAreaElement = e.target_unchecked_into();
                                 Msg::InputChanged(target.value())
                             });
+                            let on_split_keydown = ctx.link().callback(Msg::SplitKeyDown);
                             html! {
                                 <div class="split-input-overlay">
                                     <textarea
@@ -732,6 +743,7 @@ impl Component for Repl {
                                         class="split-textarea"
                                         value={self.input.clone()}
                                         oninput={on_textarea}
+                                        onkeydown={on_split_keydown}
                                         placeholder="(+ 1 2)"
                                         spellcheck="false"
                                     />
