@@ -9111,6 +9111,13 @@ _eval_init:
         add     sp,3
         la      r1,_sym_catch
         sw      r0,0(r1)
+        la      r0,_S47
+        push    r0
+        la      r0,_intern
+        jal     r1,(r0)
+        add     sp,3
+        la      r1,_sym_asm
+        sw      r0,0(r1)
         lc      r0,0
         la      r1,_catch_depth
         sw      r0,0(r1)
@@ -9122,350 +9129,350 @@ _eval_init:
         sw      r0,0(r1)
         lc      r0,0
         push    r0
-        la      r0,_S47
+        la      r0,_S48
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,1
         push    r0
-        la      r0,_S48
+        la      r0,_S49
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,2
         push    r0
-        la      r0,_S49
+        la      r0,_S50
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,3
         push    r0
-        la      r0,_S50
+        la      r0,_S51
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,4
         push    r0
-        la      r0,_S51
+        la      r0,_S52
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,5
         push    r0
-        la      r0,_S52
+        la      r0,_S53
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,6
         push    r0
-        la      r0,_S53
+        la      r0,_S54
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,7
         push    r0
-        la      r0,_S54
+        la      r0,_S55
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,8
         push    r0
-        la      r0,_S55
+        la      r0,_S56
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,9
         push    r0
-        la      r0,_S56
+        la      r0,_S57
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,10
         push    r0
-        la      r0,_S57
+        la      r0,_S58
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,11
         push    r0
-        la      r0,_S58
+        la      r0,_S59
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,12
         push    r0
-        la      r0,_S59
+        la      r0,_S60
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,13
         push    r0
-        la      r0,_S60
+        la      r0,_S61
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,14
         push    r0
-        la      r0,_S61
+        la      r0,_S62
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,15
         push    r0
-        la      r0,_S62
+        la      r0,_S63
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,16
         push    r0
-        la      r0,_S63
+        la      r0,_S64
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,17
         push    r0
-        la      r0,_S64
+        la      r0,_S65
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,18
         push    r0
-        la      r0,_S65
+        la      r0,_S66
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,19
         push    r0
-        la      r0,_S66
+        la      r0,_S67
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,20
         push    r0
-        la      r0,_S67
+        la      r0,_S68
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,21
         push    r0
-        la      r0,_S68
+        la      r0,_S69
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,22
         push    r0
-        la      r0,_S69
+        la      r0,_S70
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,23
         push    r0
-        la      r0,_S70
+        la      r0,_S71
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,24
         push    r0
-        la      r0,_S71
+        la      r0,_S72
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,25
         push    r0
-        la      r0,_S72
+        la      r0,_S73
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,26
         push    r0
-        la      r0,_S73
+        la      r0,_S74
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,27
         push    r0
-        la      r0,_S74
+        la      r0,_S75
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,28
         push    r0
-        la      r0,_S75
+        la      r0,_S76
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,29
         push    r0
-        la      r0,_S76
+        la      r0,_S77
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,30
         push    r0
-        la      r0,_S77
+        la      r0,_S78
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,31
         push    r0
-        la      r0,_S78
+        la      r0,_S79
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,32
         push    r0
-        la      r0,_S79
+        la      r0,_S80
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,33
         push    r0
-        la      r0,_S80
+        la      r0,_S81
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,34
         push    r0
-        la      r0,_S81
+        la      r0,_S82
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,35
         push    r0
-        la      r0,_S82
+        la      r0,_S83
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,36
         push    r0
-        la      r0,_S83
+        la      r0,_S84
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,37
         push    r0
-        la      r0,_S84
+        la      r0,_S85
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,38
         push    r0
-        la      r0,_S85
+        la      r0,_S86
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,39
         push    r0
-        la      r0,_S86
+        la      r0,_S87
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,40
         push    r0
-        la      r0,_S87
+        la      r0,_S88
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,41
         push    r0
-        la      r0,_S88
+        la      r0,_S89
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,42
         push    r0
-        la      r0,_S89
+        la      r0,_S90
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,43
         push    r0
-        la      r0,_S90
+        la      r0,_S91
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,44
         push    r0
-        la      r0,_S91
+        la      r0,_S92
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,45
         push    r0
-        la      r0,_S92
+        la      r0,_S93
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,46
         push    r0
-        la      r0,_S93
+        la      r0,_S94
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,47
         push    r0
-        la      r0,_S94
+        la      r0,_S95
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,48
         push    r0
-        la      r0,_S95
+        la      r0,_S96
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
         add     sp,6
         lc      r0,49
         push    r0
-        la      r0,_S96
+        la      r0,_S97
         push    r0
         la      r0,_register_prim
         jal     r1,(r0)
@@ -9520,7 +9527,7 @@ _gc_protect:
         la      r1,256
         cls     r0,r1
         brt     L755
-        la      r0,_S97
+        la      r0,_S98
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10280,7 +10287,7 @@ L806:
         lw      r0,-3(fp)
         bra     L799
 L805:
-        la      r0,_S98
+        la      r0,_S99
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10291,7 +10298,7 @@ L805:
         la      r0,_print_int
         jal     r1,(r0)
         add     sp,3
-        la      r0,_S99
+        la      r0,_S100
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10367,7 +10374,7 @@ _repl:
         push    r1
         mov     fp,sp
         sub     sp,1033
-        la      r0,_S100
+        la      r0,_S101
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10396,7 +10403,7 @@ L819:
         lc      r1,0
         cls     r0,r1
         brf     L816
-        la      r0,_S101
+        la      r0,_S102
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10410,7 +10417,7 @@ L816:
         lc      r1,0
         ceq     r0,r1
         brf     L818
-        la      r0,_S102
+        la      r0,_S103
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -10452,7 +10459,7 @@ L818:
         la      r0,_putc_uart
         jal     r1,(r0)
         add     sp,3
-        la      r0,_S103
+        la      r0,_S104
         push    r0
         la      r0,_puts_str
         jal     r1,(r0)
@@ -88915,6 +88922,8 @@ _sym_set:
         .word   0
 _sym_catch:
         .word   0
+_sym_asm:
+        .word   0
 _gensym_counter:
         .word   0
 _catch_tags:
@@ -122107,116 +122116,118 @@ _S45:
 _S46:
         .byte   99,97,116,99,104,0
 _S47:
-        .byte   43,0
+        .byte   97,115,109,0
 _S48:
-        .byte   45,0
+        .byte   43,0
 _S49:
-        .byte   42,0
+        .byte   45,0
 _S50:
-        .byte   47,0
+        .byte   42,0
 _S51:
-        .byte   37,0
+        .byte   47,0
 _S52:
-        .byte   60,0
+        .byte   37,0
 _S53:
-        .byte   61,0
+        .byte   60,0
 _S54:
-        .byte   99,111,110,115,0
+        .byte   61,0
 _S55:
-        .byte   99,97,114,0
+        .byte   99,111,110,115,0
 _S56:
-        .byte   99,100,114,0
+        .byte   99,97,114,0
 _S57:
-        .byte   108,105,115,116,0
+        .byte   99,100,114,0
 _S58:
-        .byte   110,117,108,108,63,0
+        .byte   108,105,115,116,0
 _S59:
-        .byte   112,97,105,114,63,0
+        .byte   110,117,108,108,63,0
 _S60:
-        .byte   97,116,111,109,63,0
+        .byte   112,97,105,114,63,0
 _S61:
-        .byte   101,113,63,0
+        .byte   97,116,111,109,63,0
 _S62:
-        .byte   110,111,116,0
+        .byte   101,113,63,0
 _S63:
-        .byte   112,114,105,110,116,0
+        .byte   110,111,116,0
 _S64:
-        .byte   110,117,109,98,101,114,63,0
+        .byte   112,114,105,110,116,0
 _S65:
-        .byte   101,120,105,116,0
+        .byte   110,117,109,98,101,114,63,0
 _S66:
-        .byte   112,101,101,107,0
+        .byte   101,120,105,116,0
 _S67:
-        .byte   112,111,107,101,0
+        .byte   112,101,101,107,0
 _S68:
-        .byte   100,101,108,97,121,0
+        .byte   112,111,107,101,0
 _S69:
-        .byte   112,114,105,110,116,108,110,0
+        .byte   100,101,108,97,121,0
 _S70:
-        .byte   110,101,119,108,105,110,101,0
+        .byte   112,114,105,110,116,108,110,0
 _S71:
-        .byte   97,112,112,108,121,0
+        .byte   110,101,119,108,105,110,101,0
 _S72:
-        .byte   115,116,114,105,110,103,45,108,101,110,103,116,104,0
+        .byte   97,112,112,108,121,0
 _S73:
-        .byte   115,116,114,105,110,103,45,114,101,102,0
+        .byte   115,116,114,105,110,103,45,108,101,110,103,116,104,0
 _S74:
-        .byte   115,116,114,105,110,103,45,97,112,112,101,110,100,0
+        .byte   115,116,114,105,110,103,45,114,101,102,0
 _S75:
-        .byte   115,116,114,105,110,103,61,63,0
+        .byte   115,116,114,105,110,103,45,97,112,112,101,110,100,0
 _S76:
-        .byte   115,116,114,105,110,103,63,0
+        .byte   115,116,114,105,110,103,61,63,0
 _S77:
-        .byte   100,105,115,112,108,97,121,0
+        .byte   115,116,114,105,110,103,63,0
 _S78:
-        .byte   103,99,0
+        .byte   100,105,115,112,108,97,121,0
 _S79:
-        .byte   104,101,97,112,45,117,115,101,100,0
+        .byte   103,99,0
 _S80:
-        .byte   104,101,97,112,45,115,105,122,101,0
+        .byte   104,101,97,112,45,117,115,101,100,0
 _S81:
-        .byte   110,117,109,98,101,114,45,62,115,116,114,105,110,103,0
+        .byte   104,101,97,112,45,115,105,122,101,0
 _S82:
-        .byte   102,110,63,0
+        .byte   110,117,109,98,101,114,45,62,115,116,114,105,110,103,0
 _S83:
-        .byte   101,118,97,108,0
+        .byte   102,110,63,0
 _S84:
-        .byte   109,97,99,114,111,101,120,112,97,110,100,45,49,0
+        .byte   101,118,97,108,0
 _S85:
-        .byte   103,101,110,115,121,109,0
+        .byte   109,97,99,114,111,101,120,112,97,110,100,45,49,0
 _S86:
-        .byte   115,121,109,98,111,108,45,62,115,116,114,105,110,103,0
+        .byte   103,101,110,115,121,109,0
 _S87:
-        .byte   115,116,114,105,110,103,45,62,115,121,109,98,111,108,0
+        .byte   115,121,109,98,111,108,45,62,115,116,114,105,110,103,0
 _S88:
-        .byte   116,104,114,111,119,0
+        .byte   115,116,114,105,110,103,45,62,115,121,109,98,111,108,0
 _S89:
-        .byte   100,121,110,97,109,105,99,45,119,105,110,100,0
+        .byte   116,104,114,111,119,0
 _S90:
-        .byte   115,121,109,98,111,108,63,0
+        .byte   100,121,110,97,109,105,99,45,119,105,110,100,0
 _S91:
-        .byte   115,117,98,115,116,114,105,110,103,0
+        .byte   115,121,109,98,111,108,63,0
 _S92:
-        .byte   102,111,114,109,97,116,0
+        .byte   115,117,98,115,116,114,105,110,103,0
 _S93:
-        .byte   99,104,97,114,45,62,105,110,116,101,103,101,114,0
+        .byte   102,111,114,109,97,116,0
 _S94:
-        .byte   105,110,116,101,103,101,114,45,62,99,104,97,114,0
+        .byte   99,104,97,114,45,62,105,110,116,101,103,101,114,0
 _S95:
-        .byte   115,116,114,105,110,103,45,105,110,100,101,120,0
+        .byte   105,110,116,101,103,101,114,45,62,99,104,97,114,0
 _S96:
-        .byte   115,116,114,105,110,103,45,99,111,110,116,97,105,110,115,63,0
+        .byte   115,116,114,105,110,103,45,105,110,100,101,120,0
 _S97:
-        .byte   80,65,78,73,67,58,71,67,32,114,111,111,116,32,115,116,97,99,107,32,102,117,108,108,10,0
+        .byte   115,116,114,105,110,103,45,99,111,110,116,97,105,110,115,63,0
 _S98:
-        .byte   80,65,78,73,67,58,79,79,77,32,104,101,97,112,61,0
+        .byte   80,65,78,73,67,58,71,67,32,114,111,111,116,32,115,116,97,99,107,32,102,117,108,108,10,0
 _S99:
-        .byte   32,102,114,101,101,61,48,32,103,99,61,0
+        .byte   80,65,78,73,67,58,79,79,77,32,104,101,97,112,61,0
 _S100:
-        .byte   62,32,0
+        .byte   32,102,114,101,101,61,48,32,103,99,61,0
 _S101:
-        .byte   66,121,101,46,10,0
-_S102:
         .byte   62,32,0
+_S102:
+        .byte   66,121,101,46,10,0
 _S103:
+        .byte   62,32,0
+_S104:
         .byte   62,32,0

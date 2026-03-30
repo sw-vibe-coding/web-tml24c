@@ -126,7 +126,7 @@ pub const DEMOS: &[Demo] = &[
     },
     Demo {
         title: "Switch LED",
-        description: "Poll S2 switch to light D2 — active-low I/O demo",
+        description: "Mirror S2 switch to LED D2 in a polling loop",
         source: include_str!("../../tml24c/demos/switch-led.l24"),
         prelude: PreludeTier::Standard,
         stack: StackSize::ThreeKb,

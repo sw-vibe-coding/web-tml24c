@@ -53,6 +53,10 @@ pub struct Repl {
     stack_size: StackSize,
     led_lit: bool, // true when D2 is visually lit (hardware is active-low)
     switch_pressed: bool,
+    /// Ticks to wait after feeding input before checking for prompt idle.
+    /// Prevents false "at prompt" detection when a just-fed expression
+    /// is still being evaluated (e.g. a spin loop producing no output).
+    feed_cooldown: u32,
     view_mode: ViewMode,
     selected_demo: Option<usize>,
     /// Symbol addresses from assembly labels
@@ -118,6 +122,7 @@ impl Repl {
         self.waiting_for_input = false;
         self.led_lit = false;
         self.switch_pressed = false;
+        self.feed_cooldown = 0;
         self.heap_used = 0;
         self.sym_used = 0;
         self.str_pool_used = 0;
@@ -189,7 +194,8 @@ impl Repl {
 
     fn send_input(&mut self) {
         for line in self.input.lines() {
-            if line.trim().is_empty() {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with(';') {
                 continue;
             }
             for byte in line.bytes() {
@@ -226,6 +232,7 @@ impl Component for Repl {
             stack_size: StackSize::ThreeKb,
             led_lit: false,
             switch_pressed: false,
+            feed_cooldown: 0,
             view_mode: ViewMode::Cli,
             selected_demo: None,
             addr_heap_next: None,
@@ -275,6 +282,10 @@ impl Component for Repl {
                     self.emulator.run_batch(50);
                     feed_budget = feed_budget.saturating_sub(50);
                     if byte == b'\n' {
+                        // After feeding a line, give the evaluator time
+                        // to consume and act on it before checking for
+                        // prompt idle (~10 ticks × 25ms = 250ms).
+                        self.feed_cooldown = 10;
                         break;
                     }
                 }
@@ -323,8 +334,19 @@ impl Component for Repl {
 
                 match result.reason {
                     StopReason::CycleLimit => {
-                        let at_prompt =
-                            self.uart_tx_queue.is_empty() && self.output.ends_with("> ");
+                        // Idle at the prompt only when ALL of:
+                        //  1. No input remains to feed
+                        //  2. Feed cooldown has expired (not mid-eval of
+                        //     a just-fed expression — a spin loop like
+                        //     delay or poll produces no UART output, so
+                        //     the "> " suffix alone is ambiguous)
+                        //  3. UART output ends with the REPL prompt
+                        if self.feed_cooldown > 0 {
+                            self.feed_cooldown -= 1;
+                        }
+                        let at_prompt = self.feed_cooldown == 0
+                            && self.uart_tx_queue.is_empty()
+                            && self.output.ends_with("> ");
 
                         if at_prompt {
                             self.running = false;
